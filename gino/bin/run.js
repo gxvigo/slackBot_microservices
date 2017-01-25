@@ -2,22 +2,24 @@
 
 console.log('### In run');
 
+const config = require('../config');
 const service = require('../server/service');
 const slackClient = require('../server/slackClient');
-const config = require('../config');
+const witClient = require('../server/witClient')(config.witAPIToken); // require and initialize witClient
 
 let server = null;
 
+
 // start Real-Time Messaging Slack client
-const slackBotToken = config.slackAPIToken;
-let slackLogLevel = 'verbose';  // 'debug' for more details
-console.log('### In run - slackBotToken: ' + slackBotToken);
-const rtm = slackClient.init(slackBotToken, slackLogLevel);
+const slackBotToken = config.slackAPIToken; // Token expires often, check current valid token at: https://ibmnzswgpublic.slack.com/services/132156114534?updated=1
+let slackLogLevel = config.slackLogLevel;  // 'debug' for more details
+
+const rtm = slackClient.init(slackBotToken, slackLogLevel, witClient); // witClient is passed along to be used in SlackClient
 rtm.start();
 
 // start server only if there's a connection to Slack, subscribing the Slack authenticated event
-slackClient.addAuthenticatedHandler(rtm, () => {
-
+slackClient.addAuthenticatedHandler(rtm, () => {   // ()=>{}  new syntax for function in ES6
+ 
     server = service.listen(3000, function () {
         console.log("Application listening in port 3000");  // 'pro' logging modules are: node-bunyan or winston
     })
