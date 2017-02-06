@@ -1,0 +1,17 @@
+{
+  "name": "time",
+  "version": "1.0.0",
+  "description": "Sample (micro)service to get current time from any given location",
+  "main": "bin/run.js",
+  "scripts": {
+    "start": "nodemon --watch .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "moment": "^2.17.1",
+    "request": "^2.79.0"
+  }
+}

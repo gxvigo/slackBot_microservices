@@ -11,11 +11,13 @@ const request = require('request');
  */
 
 module.exports = function witClient(token) {
-    const ask = function (message) {
+    const ask = function (message, cb) {  // cb is passed by SlackClient to be invoked once wit call is complete
         console.log('### In witClient - ask: ' + JSON.stringify(message));
 
+
+        // make a call to wit with message from Slack
         var options = {
-            url: 'https://api.wit.ai/message?v=20170125&q=HelloThere',
+            url: 'https://api.wit.ai/message?v=20170125&q=' + message,
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -29,9 +31,10 @@ module.exports = function witClient(token) {
                 console.log('### In witClient - errorMsg: ' + error);
                 console.log('### In witClient - responseMsg: ' + response);
                 console.log('### In witClient - bodyMsg: ' + body);
+                cb("witClient call failed. Err: " + error)
             } else {
-                var info = JSON.parse(body);
-                console.log('### In witClient - info: ' + body);
+                console.log('### In witClient - body: ' + body);
+                cb(null, body); // call back SlackClient with wit response body
             }
         }
         request(options, callback);
